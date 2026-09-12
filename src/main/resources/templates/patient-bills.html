@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Bills - Hospital Care</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #263746;
+
+            background:
+                    linear-gradient(
+                            rgba(225, 242, 247, 0.88),
+                            rgba(241, 248, 250, 0.93)
+                    ),
+                    url("https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=2000&q=85")
+                    center center / cover fixed no-repeat;
+        }
+
+        .page {
+            width: 94%;
+            max-width: 1250px;
+            margin: 35px auto;
+            background: rgba(255,255,255,0.94);
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow: 0 15px 45px rgba(45, 90, 110, 0.18);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 65px;
+            height: 65px;
+            margin: auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0b6f91, #168faf);
+            color: white;
+            font-size: 30px;
+            box-shadow: 0 8px 20px rgba(11,111,145,0.25);
+        }
+
+        .header h1 {
+            margin: 15px 0 5px;
+            color: #0b5273;
+            font-size: 30px;
+        }
+
+        .header p {
+            margin: 0;
+            color: #71818b;
+            font-size: 14px;
+        }
+
+        .bill-card {
+            background: white;
+            border: 1px solid #dce9ee;
+            border-radius: 17px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 22px rgba(70,116,150,0.10);
+            transition: 0.25s ease;
+        }
+
+        .bill-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(70,116,150,0.15);
+        }
+
+        .bill-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .bill-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #155b78;
+        }
+
+        .bill-id {
+            color: #82929b;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-paid {
+            background: #e7f8ef;
+            color: #16834a;
+        }
+
+        .status-pending {
+            background: #fff3dc;
+            color: #a96500;
+        }
+
+        .status-partial {
+            background: #e7f1ff;
+            color: #2769a8;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .detail-box {
+            background: #f7fafb;
+            border: 1px solid #e8eef1;
+            border-radius: 11px;
+            padding: 13px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: #82929b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #304957;
+        }
+
+        .amount-box {
+            margin-top: 18px;
+            padding: 18px;
+            background: linear-gradient(135deg, #eef9fc, #f7f5ff);
+            border-radius: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .amount-label {
+            color: #627681;
+            font-size: 13px;
+        }
+
+        .due-amount {
+            color: #d83a3a;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .paid-amount {
+            color: #15804a;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .pay-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 23px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0b6f91, #168faf);
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 7px 17px rgba(11,111,145,0.25);
+            transition: 0.25s ease;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(11,111,145,0.32);
+        }
+
+        .paid-message {
+            padding: 11px 18px;
+            border-radius: 10px;
+            background: #edf9f2;
+            color: #18834c;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 55px 20px;
+            color: #7b8b94;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 11px 24px;
+            background: #f1f5f8;
+            color: #526574;
+            border: 1px solid #dce6eb;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #e6eef2;
+            color: #0b5273;
+            border-color: #cbdde5;
+        }
+
+        @media (max-width: 900px) {
+            .details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .page {
+                width: 94%;
+                padding: 20px;
+                margin: 20px auto;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .amount-box {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="header">
+
+        <div class="header-icon">
+            💳
+        </div>
+
+        <h1>My Bills</h1>
+
+        <p>
+            View your hospital bills and securely manage your payments
+        </p>
+
+    </div>
+
+
+    <div th:if="${bills != null and !bills.isEmpty()}">
+
+        <div class="bill-card" th:each="bill : ${bills}">
+
+            <div class="bill-top">
+
+                <div>
+                    <div class="bill-title"
+                         th:text="${bill.billType}">
+                        Hospital Bill
+                    </div>
+
+                    <div class="bill-id">
+                        Bill ID:
+                        <span th:text="${bill.id}">1</span>
+                    </div>
+                </div>
+
+
+                <div>
+
+                    <span class="status status-paid"
+                          th:if="${bill.paymentStatus == 'Paid'}">
+                        ✓ Paid
+                    </span>
+
+                    <span class="status status-partial"
+                          th:if="${bill.paymentStatus == 'Partially Paid'}">
+                        Partially Paid
+                    </span>
+
+                    <span class="status status-pending"
+                          th:if="${bill.paymentStatus == 'Pending'}">
+                        Payment Pending
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="details">
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Patient
+                    </div>
+
+                    <div class="detail-value"
+                         th:text="${bill.patientName}">
+                        Patient
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Bill Date
+                    </div>
+
+                    <div class="detail-value"
+                         th:text="${bill.billDate}">
+                        2026-01-01
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Total Amount
+                    </div>
+
+                    <div class="detail-value">
+                        ₹ <span th:text="${bill.totalAmount}">0</span>
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="detail-label">
+                        Payment Method
+                    </div>
+
+                    <div class="detail-value"
+                         th:text="${bill.paymentMethod != null && !bill.paymentMethod.isEmpty() ? bill.paymentMethod : 'Not Paid Yet'}">
+                        Not Paid Yet
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="amount-box">
+
+                <div>
+
+                    <div class="amount-label">
+                        Amount Paid
+                    </div>
+
+                    <div class="paid-amount">
+                        ₹ <span th:text="${bill.paidAmount != null ? bill.paidAmount : 0}">
+                            0
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="amount-label">
+                        Amount Due
+                    </div>
+
+                    <div class="due-amount"
+                         th:if="${bill.dueAmount != null and bill.dueAmount > 0}">
+
+                        ₹ <span th:text="${bill.dueAmount}">
+                            0
+                        </span>
+
+                    </div>
+
+                    <div class="paid-message"
+                         th:if="${bill.dueAmount == null or bill.dueAmount <= 0}">
+
+                        ✓ No Amount Due
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <a th:if="${bill.dueAmount != null and bill.dueAmount > 0}"
+                       th:href="@{/pay-bill/{id}(id=${bill.id})}"
+                       class="pay-btn">
+
+                        💳 Pay Now
+
+                    </a>
+
+                    <div class="paid-message"
+                         th:if="${bill.dueAmount == null or bill.dueAmount <= 0}">
+
+                        ✓ Payment Completed
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="empty"
+         th:if="${bills == null or bills.isEmpty()}">
+
+        <div class="empty-icon">
+            🧾
+        </div>
+
+        <h3>No Bills Available</h3>
+
+        <p>
+            Your hospital bills will appear here.
+        </p>
+
+    </div>
+
+
+    <a href="/dashboard" class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

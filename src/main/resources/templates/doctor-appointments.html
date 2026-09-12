@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Appointment Management</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                    linear-gradient(
+                            rgba(8, 35, 65, 0.65),
+                            rgba(8, 35, 65, 0.65)
+                    ),
+                    url('/images/hospital-bg.jpg');
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            padding: 40px 20px;
+        }
+
+
+        .container {
+            width: 96%;
+            max-width: 1200px;
+
+            margin: auto;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border-radius: 18px;
+
+            padding: 35px;
+
+            box-shadow:
+                    0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+
+        /* HEADER */
+
+        .header {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 14px;
+
+            border-radius: 50%;
+
+            background: #eef6ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+        .header h1 {
+            color: #123f63;
+
+            font-size: 31px;
+
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* APPOINTMENT TABLE */
+
+        .table-card {
+
+            border: 1px solid #e1e8ee;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            background: white;
+
+            box-shadow:
+                    0 5px 16px rgba(0, 0, 0, 0.06);
+        }
+
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            min-width: 1050px;
+
+            border-collapse: collapse;
+        }
+
+
+        th {
+            background: #edf4f8;
+
+            color: #294b64;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            padding: 15px 13px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #dce5eb;
+        }
+
+
+        td {
+            padding: 15px 13px;
+
+            color: #555;
+
+            font-size: 13px;
+
+            border-bottom: 1px solid #edf0f2;
+
+            vertical-align: middle;
+        }
+
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        tr:hover td {
+            background: #fafcfd;
+        }
+
+
+        /* STATUS */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 7px 13px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            background: #f1f4f6;
+
+            color: #506675;
+        }
+
+
+        /* ACTIONS */
+
+        .actions {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 7px;
+        }
+
+
+        .action-btn {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding: 7px 11px;
+
+            border-radius: 7px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .accept {
+
+            background: #edf8f1;
+
+            color: #277548;
+
+            border: 1px solid #d4ebdc;
+        }
+
+
+        .accept:hover {
+
+            background: #dff2e6;
+        }
+
+
+        .complete {
+
+            background: #eef5fa;
+
+            color: #326889;
+
+            border: 1px solid #d7e5ee;
+        }
+
+
+        .complete:hover {
+
+            background: #e2eef5;
+        }
+
+
+        .cancel {
+
+            background: #fff1f1;
+
+            color: #b44d4d;
+
+            border: 1px solid #f0d7d7;
+        }
+
+
+        .cancel:hover {
+
+            background: #fde4e4;
+        }
+
+
+        /* EMPTY STATE */
+
+        .empty-state {
+
+            text-align: center;
+
+            padding: 55px 20px;
+
+            color: #777;
+        }
+
+
+        .empty-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .empty-state h2 {
+
+            color: #123f63;
+
+            font-size: 21px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .empty-state p {
+
+            font-size: 14px;
+        }
+
+
+        /* BACK */
+
+        .bottom-navigation {
+
+            text-align: center;
+
+            margin-top: 32px;
+
+            padding-top: 23px;
+
+            border-top: 1px solid #e4e9ed;
+        }
+
+
+        .back-link {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            text-decoration: none;
+
+            color: #365d78;
+
+            background: #f3f7fa;
+
+            border: 1px solid #dce6ed;
+
+            padding: 11px 23px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: 0.25s;
+        }
+
+
+        .back-link:hover {
+
+            background: #e9f1f6;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                    0 4px 10px rgba(0, 0, 0, 0.07);
+        }
+
+
+        @media(max-width: 700px) {
+
+            body {
+                padding: 20px 10px;
+            }
+
+            .container {
+                padding: 22px 16px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="header-icon">
+            📅
+        </div>
+
+        <h1>
+            Appointment Management
+        </h1>
+
+        <p>
+            Manage your patient appointments and treatment schedule
+        </p>
+
+    </div>
+
+
+
+    <!-- APPOINTMENTS -->
+
+    <div class="table-card"
+         th:if="${appointments != null and !appointments.isEmpty()}">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Patient Name</th>
+
+                    <th>Doctor Name</th>
+
+                    <th>Date</th>
+
+                    <th>Time</th>
+
+                    <th>Reason</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <tr th:each="appointment : ${appointments}">
+
+                    <td th:text="${appointment.id}">
+                        1
+                    </td>
+
+
+                    <td>
+
+                        <strong th:text="${appointment.patientName}">
+                            Patient
+                        </strong>
+
+                    </td>
+
+
+                    <td th:text="${appointment.doctorName}">
+                        Doctor
+                    </td>
+
+
+                    <td th:text="${appointment.appointmentDate}">
+                        Date
+                    </td>
+
+
+                    <td th:text="${appointment.appointmentTime}">
+                        Time
+                    </td>
+
+
+                    <td th:text="${appointment.reason}">
+                        Consultation
+                    </td>
+
+
+                    <td>
+
+                        <span class="status"
+                              th:text="${appointment.status}">
+                            Pending
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="actions">
+
+
+                            <!-- ACCEPT -->
+
+                            <a th:if="${appointment.status == 'Pending'}"
+                               th:href="@{/doctor/appointments/accept/{id}(id=${appointment.id})}"
+                               class="action-btn accept">
+
+                                Accept
+
+                            </a>
+
+
+                            <!-- COMPLETE -->
+
+                            <a th:if="${appointment.status != 'Completed'
+                                      and appointment.status != 'Cancelled'}"
+                               th:href="@{/doctor/appointments/complete/{id}(id=${appointment.id})}"
+                               class="action-btn complete">
+
+                                Complete
+
+                            </a>
+
+
+                            <!-- CANCEL -->
+
+                            <a th:if="${appointment.status == 'Pending'}"
+                               th:href="@{/doctor/appointments/cancel/{id}(id=${appointment.id})}"
+                               class="action-btn cancel"
+                               onclick="return confirm('Are you sure you want to cancel this appointment?');">
+
+                                Cancel
+
+                            </a>
+
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- EMPTY -->
+
+    <div class="empty-state"
+         th:if="${appointments == null or appointments.isEmpty()}">
+
+        <div class="empty-icon">
+            📅
+        </div>
+
+        <h2>
+            No Appointments Found
+        </h2>
+
+        <p>
+            Patient appointments will appear here when they are booked.
+        </p>
+
+    </div>
+
+
+
+    <!-- BACK TO DASHBOARD -->
+
+    <div class="bottom-navigation">
+
+        <a href="/dashboard"
+           class="back-link">
+
+            ← Back to Dashboard
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

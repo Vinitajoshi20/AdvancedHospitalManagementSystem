@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Hospital Management System</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background-image:
+                    linear-gradient(
+                            90deg,
+                            rgba(4, 28, 55, 0.78),
+                            rgba(4, 28, 55, 0.35)
+                    ),
+                    url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=2000&q=90");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-repeat: no-repeat;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px;
+
+        }
+
+        .page {
+
+            width: 100%;
+
+            max-width: 1050px;
+
+            display: grid;
+
+            grid-template-columns: 1fr 400px;
+
+            align-items: center;
+
+            gap: 70px;
+
+        }
+
+        .intro {
+
+            color: white;
+
+            padding: 20px;
+
+        }
+
+        .hospital-symbol {
+
+            font-size: 58px;
+
+            margin-bottom: 20px;
+
+            filter:
+                    drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+
+        }
+
+        .intro h1 {
+
+            font-size: 46px;
+
+            line-height: 1.15;
+
+            margin-bottom: 18px;
+
+            text-shadow:
+                    0 3px 12px rgba(0,0,0,0.45);
+
+        }
+
+        .intro h1 span {
+
+            font-weight: normal;
+
+        }
+
+        .intro p {
+
+            max-width: 550px;
+
+            font-size: 17px;
+
+            line-height: 1.7;
+
+            color: rgba(255,255,255,0.92);
+
+            text-shadow:
+                    0 2px 7px rgba(0,0,0,0.4);
+
+        }
+
+        .tagline {
+
+            margin-top: 25px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            letter-spacing: 0.5px;
+
+        }
+
+        .login-card {
+
+            padding: 38px;
+
+            border-radius: 20px;
+
+            background: rgba(255,255,255,0.16);
+
+            border: 1px solid rgba(255,255,255,0.35);
+
+            box-shadow:
+                    0 18px 45px rgba(0,0,0,0.28);
+
+            backdrop-filter: blur(14px);
+
+            -webkit-backdrop-filter: blur(14px);
+
+        }
+
+        .login-card h2 {
+
+            color: white;
+
+            text-align: center;
+
+            font-size: 30px;
+
+            margin-bottom: 8px;
+
+            text-shadow:
+                    0 2px 8px rgba(0,0,0,0.35);
+
+        }
+
+        .login-subtitle {
+
+            text-align: center;
+
+            color: rgba(255,255,255,0.85);
+
+            font-size: 14px;
+
+            margin-bottom: 28px;
+
+        }
+
+        .error {
+
+            background: rgba(180, 30, 30, 0.85);
+
+            color: white;
+
+            padding: 11px;
+
+            border-radius: 7px;
+
+            text-align: center;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+
+        }
+
+        .success {
+
+            background: rgba(30, 130, 65, 0.85);
+
+            color: white;
+
+            padding: 11px;
+
+            border-radius: 7px;
+
+            text-align: center;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+
+        }
+
+        .form-group {
+
+            margin-bottom: 19px;
+
+        }
+
+        .form-group label {
+
+            display: block;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+
+        }
+
+        .form-group input {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: 1px solid rgba(255,255,255,0.5);
+
+            border-radius: 8px;
+
+            background: rgba(255,255,255,0.92);
+
+            color: #222;
+
+            font-size: 15px;
+
+            outline: none;
+
+        }
+
+        .form-group input:focus {
+
+            border-color: white;
+
+            box-shadow:
+                    0 0 0 3px rgba(255,255,255,0.18);
+
+        }
+
+        .form-group input::placeholder {
+
+            color: #777;
+
+        }
+
+        /* PASSWORD FIELD */
+
+        .password-box {
+
+            position: relative;
+
+            width: 100%;
+
+        }
+
+        .password-box input {
+
+            padding-right: 50px;
+
+        }
+
+        .password-toggle {
+
+            position: absolute;
+
+            right: 14px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            cursor: pointer;
+
+            font-size: 18px;
+
+            color: #555;
+
+            user-select: none;
+
+            z-index: 2;
+
+        }
+
+        .password-toggle:hover {
+
+            color: #0b2d5c;
+
+        }
+
+        .login-btn {
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 5px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #0b2d5c;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+
+            box-shadow:
+                    0 5px 15px rgba(0,0,0,0.22);
+
+        }
+
+        .login-btn:hover {
+
+            background: #071f42;
+
+            transform: translateY(-2px);
+
+        }
+
+        .register-text {
+
+            text-align: center;
+
+            margin-top: 23px;
+
+            color: rgba(255,255,255,0.85);
+
+            font-size: 14px;
+
+        }
+
+        .register-text a {
+
+            color: white;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+        }
+
+        .register-text a:hover {
+
+            text-decoration: underline;
+
+        }
+
+        .back-home {
+
+            text-align: center;
+
+            margin-top: 18px;
+
+        }
+
+        .back-home a {
+
+            color: rgba(255,255,255,0.75);
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+        }
+
+        .back-home a:hover {
+
+            color: white;
+
+        }
+
+        @media (max-width: 850px) {
+
+            .page {
+
+                grid-template-columns: 1fr;
+
+                max-width: 500px;
+
+                gap: 30px;
+
+            }
+
+            .intro {
+
+                text-align: center;
+
+                padding: 0;
+
+            }
+
+            .intro h1 {
+
+                font-size: 34px;
+
+            }
+
+            .intro p {
+
+                margin: auto;
+
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            body {
+
+                padding: 20px;
+
+            }
+
+            .login-card {
+
+                padding: 28px 22px;
+
+            }
+
+            .intro h1 {
+
+                font-size: 29px;
+
+            }
+
+            .hospital-symbol {
+
+                font-size: 45px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- LEFT SIDE -->
+
+    <div class="intro">
+
+        <div class="hospital-symbol">
+            🏥
+        </div>
+
+        <h1>
+
+            Welcome to Our
+
+            <br>
+
+            <span>
+                Hospital Management System
+            </span>
+
+        </h1>
+
+        <p>
+
+            Manage healthcare services efficiently with
+            a modern and centralized hospital management
+            platform designed for patients, doctors and
+            hospital staff.
+
+        </p>
+
+        <div class="tagline">
+
+            Caring for Patients • Managing Healthcare •
+            Improving Services
+
+        </div>
+
+    </div>
+
+
+    <!-- LOGIN CARD -->
+
+    <div class="login-card">
+
+        <h2>
+            Login
+        </h2>
+
+        <div class="login-subtitle">
+
+            Sign in to continue
+
+        </div>
+
+
+        <!-- ERROR MESSAGE -->
+
+        <div
+                class="error"
+                th:if="${error}"
+                th:text="${error}">
+        </div>
+
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div
+                class="success"
+                th:if="${success}"
+                th:text="${success}">
+        </div>
+
+
+        <!-- LOGIN FORM -->
+
+        <form action="/login" method="post">
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        required>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-box">
+
+                    <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required>
+
+                    <span
+                            class="password-toggle"
+                            id="passwordToggle"
+                            onclick="togglePassword()"
+                            title="Show Password">
+
+                        👁
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                    type="submit"
+                    class="login-btn">
+
+                Login
+
+            </button>
+
+        </form>
+
+
+        <!-- REGISTER -->
+
+        <div class="register-text">
+
+            Don't have an account?
+
+            <a href="/register">
+                Register here
+            </a>
+
+        </div>
+
+
+        <!-- BACK HOME -->
+
+        <div class="back-home">
+
+            <a href="/">
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- PASSWORD SHOW / HIDE SCRIPT -->
+
+<script>
+
+    function togglePassword() {
+
+        const password =
+            document.getElementById("password");
+
+        const icon =
+            document.getElementById("passwordToggle");
+
+
+        if (password.type === "password") {
+
+            password.type = "text";
+
+            icon.textContent = "🙈";
+
+            icon.title = "Hide Password";
+
+        } else {
+
+            password.type = "password";
+
+            icon.textContent = "👁";
+
+            icon.title = "Show Password";
+
+        }
+
+    }
+
+</script>
+
+</body>
+
+</html>

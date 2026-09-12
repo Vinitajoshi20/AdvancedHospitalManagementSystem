@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Lab Reports</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                    linear-gradient(
+                            rgba(10, 35, 60, 0.62),
+                            rgba(10, 35, 60, 0.62)
+                    ),
+                    url('/images/hospital-bg.jpg');
+
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+
+            padding: 40px 20px;
+        }
+
+
+        /* MAIN CONTAINER */
+
+        .main-container {
+            width: 95%;
+            max-width: 1150px;
+
+            margin: auto;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            border-radius: 18px;
+
+            padding: 35px 40px;
+
+            box-shadow:
+                    0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+
+        /* HEADER */
+
+        .page-header {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .page-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #eef6ff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 34px;
+        }
+
+        .page-header h1 {
+            color: #123f63;
+
+            font-size: 32px;
+
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #777;
+
+            font-size: 15px;
+        }
+
+
+        /* REPORT CARD */
+
+        .report-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e3eaf0;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                    0 5px 18px rgba(0, 0, 0, 0.06);
+        }
+
+
+        /* REPORT TOP */
+
+        .report-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding-bottom: 18px;
+
+            border-bottom: 1px solid #e8edf2;
+
+            margin-bottom: 20px;
+        }
+
+
+        .test-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .test-icon {
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 12px;
+
+            background: #f0f7ff;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 24px;
+        }
+
+
+        .test-info h2 {
+
+            color: #123f63;
+
+            font-size: 21px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .report-id {
+
+            color: #888;
+
+            font-size: 13px;
+        }
+
+
+        /* STATUS */
+
+        .status {
+
+            padding: 8px 16px;
+
+            border-radius: 20px;
+
+            background: #eaf8ef;
+
+            color: #21864b;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        /* DETAILS */
+
+        .details-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+        }
+
+
+        .detail {
+
+            background: #f8fafc;
+
+            border: 1px solid #e5ebf0;
+
+            border-radius: 10px;
+
+            padding: 15px 17px;
+        }
+
+
+        .detail label {
+
+            display: block;
+
+            font-size: 12px;
+
+            color: #8a8a8a;
+
+            margin-bottom: 7px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        .detail span {
+
+            color: #284b67;
+
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+
+        /* SECTION */
+
+        .section {
+
+            margin-top: 18px;
+        }
+
+
+        .section h3 {
+
+            color: #123f63;
+
+            font-size: 16px;
+
+            margin-bottom: 9px;
+        }
+
+
+        .result-box {
+
+            background: #f9fbfd;
+
+            border-left: 4px solid #6b9fc5;
+
+            border-radius: 8px;
+
+            padding: 15px;
+
+            color: #444;
+
+            line-height: 1.6;
+
+            min-height: 55px;
+        }
+
+
+        /* DOCTOR REMARK */
+
+        .remark-box {
+
+            background: #fffaf1;
+
+            border-left: 4px solid #d9a441;
+
+            border-radius: 8px;
+
+            padding: 15px;
+
+            color: #555;
+
+            line-height: 1.6;
+
+            min-height: 55px;
+        }
+
+
+        /* EMPTY */
+
+        .empty-state {
+
+            text-align: center;
+
+            padding: 55px 20px;
+        }
+
+
+        .empty-icon {
+
+            font-size: 48px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .empty-state h2 {
+
+            color: #123f63;
+
+            font-size: 22px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .empty-state p {
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* BOTTOM NAVIGATION */
+
+        .bottom-navigation {
+
+            margin-top: 35px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid #e5e9ed;
+
+            text-align: center;
+        }
+
+
+        .dashboard-link {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 9px;
+
+            text-decoration: none;
+
+            color: #365d78;
+
+            background: #f3f7fa;
+
+            border: 1px solid #dce6ed;
+
+            padding: 12px 24px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: all 0.25s ease;
+        }
+
+
+        .dashboard-link:hover {
+
+            background: #e9f1f6;
+
+            border-color: #c8d8e3;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                    0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .dashboard-icon {
+
+            font-size: 17px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 20px 10px;
+            }
+
+            .main-container {
+                padding: 25px 18px;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-top {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<div class="main-container">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div class="page-icon">
+            🧪
+        </div>
+
+        <h1>My Lab Reports</h1>
+
+        <p>
+            View your laboratory test reports and medical test results
+        </p>
+
+    </div>
+
+
+
+    <!-- REPORTS -->
+
+    <div th:if="${labReports != null and !labReports.isEmpty()}">
+
+
+        <div class="report-card"
+             th:each="report : ${labReports}">
+
+
+            <!-- REPORT HEADER -->
+
+            <div class="report-top">
+
+                <div class="test-info">
+
+                    <div class="test-icon">
+                        🧪
+                    </div>
+
+                    <div>
+
+                        <h2 th:text="${report.testName}">
+                            Laboratory Test
+                        </h2>
+
+                        <div class="report-id">
+
+                            Report ID:
+                            <span th:text="${report.id}">
+                                1
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="status">
+                    Report Available
+                </div>
+
+            </div>
+
+
+
+            <!-- PATIENT DETAILS -->
+
+            <div class="details-grid">
+
+
+                <div class="detail">
+
+                    <label>Patient Name</label>
+
+                    <span th:text="${report.patientName}">
+                        Patient Name
+                    </span>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <label>Patient ID</label>
+
+                    <span th:text="${report.patientId}">
+                        Patient ID
+                    </span>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <label>Test Date</label>
+
+                    <span th:text="${report.testDate}">
+                        Test Date
+                    </span>
+
+                </div>
+
+
+                <div class="detail">
+
+                    <label>Test Name</label>
+
+                    <span th:text="${report.testName}">
+                        Test Name
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- TEST RESULT -->
+
+            <div class="section">
+
+                <h3>
+                    Test Result
+                </h3>
+
+                <div class="result-box"
+                     th:text="${report.testResult}">
+
+                    Test result will appear here.
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DOCTOR REMARK -->
+
+            <div class="section">
+
+                <h3>
+                    Doctor's Remark
+                </h3>
+
+                <div class="remark-box"
+                     th:text="${report.doctorRemark}">
+
+                    Doctor's remark will appear here.
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- NO REPORTS -->
+
+    <div class="empty-state"
+         th:if="${labReports == null or labReports.isEmpty()}">
+
+        <div class="empty-icon">
+            🧪
+        </div>
+
+        <h2>
+            No Lab Reports Available
+        </h2>
+
+        <p>
+            Your laboratory reports will appear here once they are added.
+        </p>
+
+    </div>
+
+
+
+    <!-- BACK TO DASHBOARD -->
+
+    <div class="bottom-navigation">
+
+        <a href="/dashboard"
+           class="dashboard-link">
+
+            <span class="dashboard-icon">
+                ←
+            </span>
+
+            <span>
+                Back to Dashboard
+            </span>
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

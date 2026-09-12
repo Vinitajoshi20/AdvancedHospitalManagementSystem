@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Medical Reports</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                    linear-gradient(rgba(5, 35, 55, 0.72), rgba(5, 35, 55, 0.72)),
+                    url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 35px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: #0b3d62;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .header h1 {
+            color: #0b3d62;
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .patient-card {
+            background: #f1f7fb;
+            border-left: 5px solid #12618d;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 28px;
+        }
+
+        .patient-card h3 {
+            color: #0b3d62;
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .patient-card p {
+            color: #475569;
+            font-size: 15px;
+        }
+
+        .reports {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .report-card {
+            background: white;
+            border: 1px solid #dbe5ec;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.06);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .report-title {
+            color: #0b3d62;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .report-date {
+            background: #e8f3f9;
+            color: #12618d;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .detail-box.full {
+            grid-column: 1 / -1;
+        }
+
+        .label {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .value {
+            color: #1e293b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .ai-button {
+            display: inline-block;
+            text-decoration: none;
+            background: #0b3d62;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .ai-button:hover {
+            background: #12618d;
+            transform: translateY(-1px);
+        }
+
+        .analysis-button {
+            background: #12618d;
+        }
+
+        .analysis-button:hover {
+            background: #0b3d62;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 55px 20px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 14px;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state h3 {
+            color: #0b3d62;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .bottom-action {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            background: #e8f0f5;
+            color: #0b3d62;
+            padding: 12px 24px;
+            border-radius: 9px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .back-button:hover {
+            background: #d8e7f0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 20px 12px;
+            }
+
+            .container {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-box.full {
+                grid-column: auto;
+            }
+
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .ai-button {
+                text-align: center;
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div class="header-icon">
+            📋
+        </div>
+
+        <h1>My Medical Reports</h1>
+
+        <p>
+            View your medical history, diagnosis and treatment information
+        </p>
+
+    </div>
+
+
+    <div class="patient-card">
+
+        <h3>Patient Information</h3>
+
+        <p>
+            Patient:
+            <strong th:text="${session.loggedInUser.name}">
+                Patient Name
+            </strong>
+        </p>
+
+    </div>
+
+
+    <div class="reports"
+         th:if="${reports != null and !#lists.isEmpty(reports)}">
+
+        <div class="report-card"
+             th:each="report : ${reports}">
+
+            <div class="report-header">
+
+                <div class="report-title">
+                    Medical Report
+                    <span th:text="'#' + ${report.id}">
+                        #1
+                    </span>
+                </div>
+
+                <div class="report-date">
+
+                    📅
+                    <span th:text="${report.reportDate}">
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="details-grid">
+
+                <div class="detail-box">
+
+                    <div class="label">
+                        Patient Name
+                    </div>
+
+                    <div class="value"
+                         th:text="${report.patientName}">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="label">
+                        Patient ID
+                    </div>
+
+                    <div class="value"
+                         th:text="${report.patientId}">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="label">
+                        Diagnosis
+                    </div>
+
+                    <div class="value"
+                         th:text="${report.diagnosis != null and !#strings.isEmpty(report.diagnosis) ? report.diagnosis : 'Not available'}">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box">
+
+                    <div class="label">
+                        Symptoms
+                    </div>
+
+                    <div class="value"
+                         th:text="${report.symptoms != null and !#strings.isEmpty(report.symptoms) ? report.symptoms : 'Not available'}">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box full">
+
+                    <div class="label">
+                        Prescription
+                    </div>
+
+                    <div class="value"
+                         th:text="${report.prescription != null and !#strings.isEmpty(report.prescription) ? report.prescription : 'Not available'}">
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="detail-box full">
+
+                    <div class="label">
+                        Doctor's Advice
+                    </div>
+
+                    <div class="value"
+                         th:text="${report.doctorAdvice != null and !#strings.isEmpty(report.doctorAdvice) ? report.doctorAdvice : 'Not available'}">
+                        -
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <a class="ai-button"
+                   th:href="@{/my-medical-summary/{id}(id=${report.id})}">
+                    🤖 AI Medical Summary
+                </a>
+
+                <a class="ai-button analysis-button"
+                   th:href="@{/my-medical-analysis/{id}(id=${report.id})}">
+                    🧠 AI Medical Analysis
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="empty-state"
+         th:if="${reports == null or #lists.isEmpty(reports)}">
+
+        <div class="empty-icon">
+            📄
+        </div>
+
+        <h3>No Medical Reports Available</h3>
+
+        <p>
+            Your medical reports will appear here when they are added by the hospital.
+        </p>
+
+    </div>
+
+
+    <div class="bottom-action">
+
+        <a href="/dashboard"
+           class="back-button">
+            ← Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="footer">
+
+        Advanced Hospital Management System
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

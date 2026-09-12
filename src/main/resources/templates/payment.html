@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Secure Payment - Hospital Care</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            color: #263746;
+
+            background:
+                    linear-gradient(
+                            rgba(225, 242, 247, 0.90),
+                            rgba(241, 248, 250, 0.94)
+                    ),
+                    url("https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=2000&q=85")
+                    center center / cover fixed no-repeat;
+        }
+
+
+        .container {
+
+            width: 92%;
+            max-width: 950px;
+
+            margin: 45px auto;
+
+            background: rgba(255,255,255,0.96);
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                    0 18px 50px rgba(40,80,100,0.20);
+        }
+
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+
+        .payment-icon {
+
+            width: 68px;
+            height: 68px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #0b6f91,
+                            #168faf
+                    );
+
+            color: white;
+
+            box-shadow:
+                    0 8px 20px rgba(11,111,145,0.25);
+        }
+
+
+        .header h1 {
+
+            color: #0b5273;
+
+            margin: 15px 0 5px;
+
+            font-size: 29px;
+        }
+
+
+        .header p {
+
+            color: #71818b;
+
+            margin: 0;
+
+            font-size: 14px;
+        }
+
+
+        .payment-layout {
+
+            display: grid;
+
+            grid-template-columns: 300px 1fr;
+
+            gap: 25px;
+        }
+
+
+        .bill-summary {
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #eef9fc,
+                            #f5f1ff
+                    );
+
+            border-radius: 17px;
+
+            padding: 23px;
+
+            height: fit-content;
+        }
+
+
+        .bill-summary h3 {
+
+            margin-top: 0;
+
+            color: #155b78;
+        }
+
+
+        .summary-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 11px 0;
+
+            border-bottom: 1px solid #dce8ed;
+
+            font-size: 13px;
+        }
+
+
+        .summary-row:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .summary-label {
+
+            color: #748690;
+        }
+
+
+        .summary-value {
+
+            font-weight: 700;
+
+            color: #334c59;
+        }
+
+
+        .payable {
+
+            margin-top: 20px;
+
+            padding: 15px;
+
+            border-radius: 12px;
+
+            background: white;
+
+            text-align: center;
+        }
+
+
+        .payable span {
+
+            display: block;
+
+            color: #7a8a93;
+
+            font-size: 12px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .payable strong {
+
+            color: #d83a3a;
+
+            font-size: 27px;
+        }
+
+
+        .payment-box {
+
+            background: white;
+
+            border: 1px solid #dce9ee;
+
+            border-radius: 17px;
+
+            padding: 25px;
+        }
+
+
+        .payment-box h2 {
+
+            margin-top: 0;
+
+            color: #155b78;
+
+            font-size: 21px;
+        }
+
+
+        .methods {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .method {
+
+            position: relative;
+        }
+
+
+        .method input {
+
+            position: absolute;
+
+            opacity: 0;
+        }
+
+
+        .method label {
+
+            display: block;
+
+            padding: 14px 8px;
+
+            text-align: center;
+
+            border: 1px solid #d9e5ea;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #536a76;
+
+            background: #f9fbfc;
+
+            transition: 0.2s;
+        }
+
+
+        .method input:checked + label {
+
+            border-color: #0b6f91;
+
+            background: #eaf8fc;
+
+            color: #0b6381;
+
+            box-shadow:
+                    0 4px 12px rgba(11,111,145,0.12);
+        }
+
+
+        .form-section {
+
+            margin-top: 15px;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 15px;
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #536873;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            padding: 12px 13px;
+
+            border: 1px solid #d6e2e7;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            font-size: 13px;
+
+            background: #fbfdfe;
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            border-color: #168faf;
+
+            box-shadow:
+                    0 0 0 3px rgba(22,143,175,0.09);
+        }
+
+
+        .row {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 14px;
+        }
+
+
+        .pay-now {
+
+            width: 100%;
+
+            border: none;
+
+            padding: 14px;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #0b6f91,
+                            #168faf
+                    );
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            box-shadow:
+                    0 8px 18px rgba(11,111,145,0.25);
+
+            transition: 0.25s;
+        }
+
+
+        .pay-now:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                    0 11px 24px rgba(11,111,145,0.32);
+        }
+
+
+        .security {
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            color: #7b8c95;
+
+            font-size: 11px;
+        }
+
+
+        .success {
+
+            text-align: center;
+
+            padding: 30px 20px;
+        }
+
+
+        .success-icon {
+
+            width: 70px;
+
+            height: 70px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            background: #e6f8ed;
+
+            color: #16834a;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 36px;
+        }
+
+
+        .success h2 {
+
+            color: #16834a;
+
+            margin-bottom: 8px;
+        }
+
+
+        .success p {
+
+            color: #687b85;
+
+            font-size: 14px;
+        }
+
+
+        .buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+
+        .back-btn {
+
+            display: inline-block;
+
+            padding: 11px 22px;
+
+            background: #f1f5f8;
+
+            color: #526574;
+
+            border: 1px solid #dce6eb;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        @media (max-width: 800px) {
+
+            .payment-layout {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+
+                width: 94%;
+
+                padding: 20px;
+
+                margin: 20px auto;
+            }
+
+            .methods {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .row {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div th:if="${success}">
+
+        <div class="success">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h2>Payment Successful</h2>
+
+            <p>
+                Your hospital bill has been paid successfully.
+            </p>
+
+            <p>
+                Payment Method:
+                <strong th:text="${bill.paymentMethod}">
+                    UPI
+                </strong>
+            </p>
+
+            <div class="buttons">
+
+                <a href="/my-bills" class="back-btn">
+                    ← Back to My Bills
+                </a>
+
+                <a href="/dashboard" class="back-btn">
+                    Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div th:unless="${success}">
+
+        <div class="header">
+
+            <div class="payment-icon">
+                💳
+            </div>
+
+            <h1>Secure Bill Payment</h1>
+
+            <p>
+                Complete your hospital bill payment digitally
+            </p>
+
+        </div>
+
+
+        <div class="payment-layout">
+
+
+            <div class="bill-summary">
+
+                <h3>Bill Summary</h3>
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Bill ID
+                    </span>
+
+                    <span class="summary-value"
+                          th:text="${bill.id}">
+                        1
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Patient
+                    </span>
+
+                    <span class="summary-value"
+                          th:text="${bill.patientName}">
+                        Patient
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Bill Type
+                    </span>
+
+                    <span class="summary-value"
+                          th:text="${bill.billType}">
+                        Consultation
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Total
+                    </span>
+
+                    <span class="summary-value">
+                        ₹ <span th:text="${bill.totalAmount}">
+                            0
+                        </span>
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        Already Paid
+                    </span>
+
+                    <span class="summary-value">
+                        ₹ <span th:text="${bill.paidAmount}">
+                            0
+                        </span>
+                    </span>
+
+                </div>
+
+
+                <div class="payable">
+
+                    <span>
+                        Amount Payable
+                    </span>
+
+                    <strong>
+                        ₹ <span th:text="${bill.dueAmount}">
+                            0
+                        </span>
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="payment-box">
+
+                <h2>
+                    Select Payment Method
+                </h2>
+
+
+                <form th:action="@{/pay-bill/{id}(id=${bill.id})}"
+                      method="post">
+
+
+                    <div class="methods">
+
+
+                        <div class="method">
+
+                            <input
+                                    type="radio"
+                                    id="credit"
+                                    name="paymentMethod"
+                                    value="Credit Card"
+                                    checked>
+
+                            <label for="credit">
+                                💳 Credit Card
+                            </label>
+
+                        </div>
+
+
+                        <div class="method">
+
+                            <input
+                                    type="radio"
+                                    id="debit"
+                                    name="paymentMethod"
+                                    value="Debit Card">
+
+                            <label for="debit">
+                                💳 Debit Card
+                            </label>
+
+                        </div>
+
+
+                        <div class="method">
+
+                            <input
+                                    type="radio"
+                                    id="upi"
+                                    name="paymentMethod"
+                                    value="UPI">
+
+                            <label for="upi">
+                                📱 UPI
+                            </label>
+
+                        </div>
+
+
+                        <div class="method">
+
+                            <input
+                                    type="radio"
+                                    id="bank"
+                                    name="paymentMethod"
+                                    value="Net Banking">
+
+                            <label for="bank">
+                                🏦 Net Banking
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-section">
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Card Holder Name
+                            </label>
+
+                            <input
+                                    type="text"
+                                    name="cardHolder"
+                                    placeholder="Enter card holder name">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Card Number
+                            </label>
+
+                            <input
+                                    type="text"
+                                    name="cardNumber"
+                                    placeholder="XXXX XXXX XXXX XXXX"
+                                    maxlength="19">
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="form-group">
+
+                                <label>
+                                    Expiry Date
+                                </label>
+
+                                <input
+                                        type="text"
+                                        name="expiry"
+                                        placeholder="MM/YY">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label>
+                                    CVV
+                                </label>
+
+                                <input
+                                        type="password"
+                                        name="cvv"
+                                        placeholder="XXX"
+                                        maxlength="3">
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                UPI ID
+                            </label>
+
+                            <input
+                                    type="text"
+                                    name="upiId"
+                                    placeholder="example@upi">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>
+                                Select Bank
+                            </label>
+
+                            <select name="bankName">
+
+                                <option value="">
+                                    Select your bank
+                                </option>
+
+                                <option>State Bank of India</option>
+                                <option>HDFC Bank</option>
+                                <option>ICICI Bank</option>
+                                <option>Axis Bank</option>
+                                <option>Punjab National Bank</option>
+                                <option>Bank of Baroda</option>
+                                <option>Canara Bank</option>
+                                <option>Union Bank of India</option>
+                                <option>Indian Bank</option>
+                                <option>Kotak Mahindra Bank</option>
+                                <option>IndusInd Bank</option>
+                                <option>Yes Bank</option>
+                                <option>Bank of India</option>
+                                <option>Central Bank of India</option>
+                                <option>UCO Bank</option>
+                                <option>Other Bank</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="pay-now">
+
+                            🔒 Pay ₹
+                            <span th:text="${bill.dueAmount}">
+                                0
+                            </span>
+
+                        </button>
+
+
+                        <div class="security">
+
+                            🔐 Secure digital payment • Hospital Care
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

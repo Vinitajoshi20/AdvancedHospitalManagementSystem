@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor - Patient Management</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #f1f5f9;
+
+            color: #1e293b;
+        }
+
+        .container {
+
+            width: 95%;
+
+            max-width: 1200px;
+
+            margin: 40px auto;
+        }
+
+        .card {
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                    0 10px 30px
+                    rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+
+            text-align: center;
+
+            color: #063b63;
+
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+
+            max-width: 650px;
+
+            margin: 0 auto 25px auto;
+
+            display: flex;
+
+            gap: 10px;
+        }
+
+        .search-box input {
+
+            flex: 1;
+
+            padding: 13px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+        }
+
+        .search-box input:focus {
+
+            outline: none;
+
+            border-color: #1769aa;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(23, 105, 170, 0.12);
+        }
+
+        .search-box button {
+
+            padding: 13px 22px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #0b5fa5;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+
+            background: #084b82;
+        }
+
+        .search-result {
+
+            max-width: 650px;
+
+            margin: 0 auto 25px auto;
+
+            padding: 14px 18px;
+
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            border-radius: 8px;
+
+            color: #1e3a8a;
+
+            font-weight: bold;
+        }
+
+        .table-container {
+
+            overflow-x: auto;
+        }
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+
+            padding: 13px;
+
+            border: 1px solid #cbd5e1;
+
+            text-align: center;
+        }
+
+        th {
+
+            background: #063b63;
+
+            color: white;
+        }
+
+        tr:nth-child(even) {
+
+            background: #f8fafc;
+        }
+
+        .view-button {
+
+            display: inline-block;
+
+            padding: 8px 15px;
+
+            background: #0b5fa5;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 5px;
+
+            font-size: 13px;
+        }
+
+        .view-button:hover {
+
+            background: #084b82;
+        }
+
+        .no-result {
+
+            text-align: center;
+
+            padding: 20px;
+
+            color: #b91c1c;
+
+            font-weight: bold;
+        }
+
+        .back-button {
+
+            display: block;
+
+            width: 220px;
+
+            margin: 30px auto 0;
+
+            padding: 12px;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background: #063b63;
+
+            color: white;
+
+            border-radius: 7px;
+
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>
+            👨‍⚕️ Patient Management
+        </h1>
+
+
+        <!-- SEARCH -->
+
+        <form
+                class="search-box"
+                method="get"
+                action="/doctor/patients">
+
+            <input
+                    type="text"
+                    name="search"
+                    th:value="${search}"
+                    placeholder="Search patient by name"
+                    required>
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+        </form>
+
+
+        <!-- SEARCH RESULT MESSAGE -->
+
+        <div
+                th:if="${search != null and !search.trim().isEmpty()}"
+                class="search-result">
+
+            Search Result for:
+
+            <span th:text="${search}">
+                Neha
+            </span>
+
+        </div>
+
+
+        <!-- PATIENT TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Patient Name</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <tr th:each="patient : ${patients}">
+
+                    <td th:text="${patient.id}">
+                        1
+                    </td>
+
+                    <td th:text="${patient.name}">
+                        Patient Name
+                    </td>
+
+                    <td>
+
+                        <a
+                                th:href="@{/doctor/patients/view/{id}(id=${patient.id})}"
+                                class="view-button">
+
+                            View Patient
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- NO RESULT -->
+
+                <tr
+                        th:if="${#lists.isEmpty(patients)}">
+
+                    <td
+                            colspan="3"
+                            class="no-result">
+
+                        No patient found.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- BACK -->
+
+        <a
+                href="/dashboard"
+                class="back-button">
+
+            Back to Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef3f8;
+            color: #222;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 45px auto;
+            background: white;
+            padding: 35px 40px;
+            border-radius: 16px;
+            box-shadow: 0 5px 22px rgba(0,0,0,0.10);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0b2d5c;
+            margin-bottom: 30px;
+            font-size: 30px;
+        }
+
+        /* Profile Header */
+
+        .profile-header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e5ec;
+        }
+
+        .profile-picture {
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            background: #0b2d5c;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+        }
+
+        .profile-picture span {
+            font-size: 55px;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .change-photo {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 9px 18px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #0b2d5c;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .change-photo:hover {
+            background: #e7eef7;
+        }
+
+        .profile-name {
+            margin-top: 18px;
+            font-size: 23px;
+            font-weight: bold;
+            color: #0b2d5c;
+        }
+
+        .profile-role {
+            margin-top: 6px;
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* Sections */
+
+        .section {
+            margin-top: 30px;
+        }
+
+        .section h2 {
+            color: #0b2d5c;
+            font-size: 21px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #0b2d5c;
+            padding-bottom: 8px;
+        }
+
+        /* Edit Form */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #0b2d5c;
+            box-shadow: 0 0 0 2px rgba(11,45,92,0.08);
+        }
+
+        .readonly-input {
+            background: #f1f5f9;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Account Information */
+
+        .info-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            background: #f8fafc;
+            border: 1px solid #dce3ec;
+            border-radius: 8px;
+            padding: 17px;
+        }
+
+        .info-label {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            color: #0b2d5c;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+
+        .button-area {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e5ec;
+        }
+
+        .save-btn {
+            padding: 12px 28px;
+            background: #0b2d5c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .save-btn:hover {
+            background: #082344;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: white;
+            color: #0b2d5c;
+            border: 1px solid #0b2d5c;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #f1f5f9;
+        }
+
+        /* Mobile */
+
+        @media(max-width: 600px) {
+
+            .container {
+                width: 94%;
+                padding: 25px 18px;
+                margin: 25px auto;
+            }
+
+            .info-box {
+                grid-template-columns: 1fr;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .save-btn,
+            .back-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>My Profile</h1>
+
+    <!-- Profile Header -->
+
+    <div class="profile-header">
+
+        <div class="profile-picture" id="profilePicture">
+            <span id="defaultIcon">👤</span>
+        </div>
+
+        <label for="photoInput" class="change-photo">
+            📷 Change Profile Picture
+        </label>
+
+        <input
+                type="file"
+                id="photoInput"
+                accept="image/*"
+                style="display:none;"
+                onchange="previewPhoto(event)"
+        >
+
+        <div class="profile-name" th:text="${user.name}">
+            Patient Name
+        </div>
+
+        <div class="profile-role">
+            Patient Account
+        </div>
+
+    </div>
+
+
+    <!-- Personal Information -->
+
+    <div class="section">
+
+        <h2>Personal Information</h2>
+
+        <form action="/update-profile" method="post">
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        th:value="${user.name}"
+                        placeholder="Enter your full name"
+                        required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        th:value="${user.email}"
+                        placeholder="Enter your email address"
+                        required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="role">
+                    Account Role
+                </label>
+
+                <input
+                        type="text"
+                        id="role"
+                        th:value="${user.role}"
+                        class="readonly-input"
+                        readonly
+                >
+
+            </div>
+
+
+            <!-- Account Information -->
+
+            <div class="section">
+
+                <h2>Account Information</h2>
+
+                <div class="info-box">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Account Type
+                        </div>
+
+                        <div class="info-value">
+                            Patient
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Account Status
+                        </div>
+
+                        <div class="info-value">
+                            Active
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="button-area">
+
+                <a href="/dashboard" class="back-btn">
+                    ← Back to Dashboard
+                </a>
+
+                <button type="submit" class="save-btn">
+                    💾 Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    function previewPhoto(event) {
+
+        const file = event.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            const profilePicture =
+                document.getElementById("profilePicture");
+
+            profilePicture.innerHTML =
+                '<img src="' + e.target.result + '" alt="Profile Picture">';
+
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+</script>
+
+</body>
+
+</html>

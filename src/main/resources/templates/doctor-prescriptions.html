@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Prescriptions - Hospital Management System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: url('/images/hospital-bg.jpg') center/cover fixed no-repeat;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        h1 {
+            text-align: center;
+            color: #123b66;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .doctor-info {
+            background: #eef6ff;
+            padding: 15px 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: #123b66;
+            font-weight: bold;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 7px;
+            color: #123b66;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            padding: 12px;
+            border: 1px solid #ccd8e3;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #123b66;
+            box-shadow: 0 0 0 2px rgba(18, 59, 102, 0.08);
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        button,
+        .back-btn {
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        button {
+            background: #123b66;
+            color: white;
+        }
+
+        button:hover {
+            background: #0d2d4f;
+        }
+
+        .back-btn {
+            background: #e8edf2;
+            color: #123b66;
+        }
+
+        .back-btn:hover {
+            background: #d9e1e8;
+        }
+
+        @media (max-width: 650px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 22px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button,
+            .back-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>💊 Create Prescription</h1>
+
+    <p class="subtitle">
+        Add medicine and treatment instructions for the patient
+    </p>
+
+    <div class="doctor-info">
+        👨‍⚕️ Doctor:
+        <span th:text="${session.loggedInUser.name}"></span>
+    </div>
+
+    <form th:action="@{/doctor/prescriptions}"
+          th:object="${prescription}"
+          method="post">
+
+        <div class="row">
+
+            <div class="form-group">
+                <label>Patient ID</label>
+                <input type="number"
+                       th:field="*{patientId}"
+                       placeholder="Enter patient ID"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Patient Name</label>
+                <input type="text"
+                       th:field="*{patientName}"
+                       placeholder="Enter patient name"
+                       required>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Prescription Date</label>
+
+            <input type="date"
+                   th:field="*{prescriptionDate}"
+                   required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Medicine Name</label>
+
+            <input type="text"
+                   th:field="*{medicineName}"
+                   placeholder="Enter medicine name"
+                   required>
+
+        </div>
+
+        <div class="row">
+
+            <div class="form-group">
+
+                <label>Dosage</label>
+
+                <input type="text"
+                       th:field="*{dosage}"
+                       placeholder="Example: 1 tablet twice a day"
+                       required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Duration</label>
+
+                <input type="text"
+                       th:field="*{duration}"
+                       placeholder="Example: 5 days"
+                       required>
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Doctor's Instructions</label>
+
+            <textarea th:field="*{instructions}"
+                      placeholder="Enter instructions for the patient..."
+                      required></textarea>
+
+        </div>
+
+        <div class="buttons">
+
+            <button type="submit">
+                Save Prescription
+            </button>
+
+            <a href="/dashboard" class="back-btn">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

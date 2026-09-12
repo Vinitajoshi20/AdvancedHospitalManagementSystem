@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospital Care - Dashboard</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #243746;
+
+            background:
+                    linear-gradient(
+                            rgba(3, 22, 45, 0.10),
+                            rgba(3, 22, 45, 0.18)
+                    ),
+                    url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=2200&q=95")
+                    center center / cover fixed no-repeat;
+        }
+
+
+        /* ================= PAGE CONTAINER ================= */
+
+        .page-container {
+            width: 94%;
+            max-width: 1450px;
+            margin: 22px auto;
+            padding: 0 0 28px;
+
+            background: rgba(255, 255, 255, 0.58);
+
+            border: 1px solid rgba(255,255,255,0.68);
+            border-radius: 26px;
+
+            box-shadow:
+                    0 25px 70px rgba(0, 20, 45, 0.34),
+                    inset 0 1px 0 rgba(255,255,255,0.80);
+
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+
+            overflow: hidden;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            width: 100%;
+            min-height: 82px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 14px 28px;
+
+            background: rgba(255, 255, 255, 0.98);
+
+            border-bottom: 1px solid #e4edf2;
+
+            box-shadow:
+                    0 5px 18px rgba(31, 70, 92, 0.10);
+
+            position: relative;
+            z-index: 20;
+        }
+
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+
+        /* ================= HOSPITAL LOGO ================= */
+
+        .advanced-hospital-logo {
+            width: 48px;
+            height: 44px;
+
+            position: relative;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #ff4b55,
+                            #d71932
+                    );
+
+            clip-path: polygon(
+                    50% 0%,
+                    100% 38%,
+                    91% 38%,
+                    91% 100%,
+                    9% 100%,
+                    9% 38%,
+                    0% 38%
+            );
+
+            filter:
+                    drop-shadow(
+                            0 5px 8px rgba(214, 30, 49, 0.30)
+                    );
+        }
+
+
+        .logo-cross {
+            position: absolute;
+
+            left: 50%;
+            top: 52%;
+
+            transform: translate(-50%, -50%);
+
+            width: 22px;
+            height: 7px;
+
+            background: white;
+
+            border-radius: 3px;
+        }
+
+
+        .logo-cross::after {
+            content: "";
+
+            position: absolute;
+
+            width: 7px;
+            height: 22px;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            background: white;
+
+            border-radius: 3px;
+        }
+
+
+        .brand-text h1 {
+            margin: 0;
+
+            font-size: 24px;
+            font-weight: 800;
+
+            letter-spacing: -0.4px;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #075b7b,
+                            #2878a0,
+                            #7a55b7
+                    );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        /* ================= TOP RIGHT ================= */
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+
+        .welcome-area {
+            display: flex;
+            align-items: center;
+        }
+
+
+        /* ================= WELCOME ================= */
+
+        .welcome-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+
+            padding: 18px 30px;
+
+            min-width: 295px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(206,246,255,0.94),
+                            rgba(230,222,255,0.94),
+                            rgba(255,220,238,0.94)
+                    );
+
+            border:
+                    1px solid rgba(255,255,255,0.92);
+
+            border-radius: 18px;
+
+            box-shadow:
+                    0 10px 28px rgba(71, 103, 142, 0.18);
+
+            transition: 0.25s ease;
+        }
+
+
+        .welcome-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                    0 15px 34px rgba(71, 103, 142, 0.25);
+        }
+
+
+        .welcome-card span:first-child {
+            font-size: 17px;
+            font-weight: 700;
+            color: #526c7a;
+        }
+
+
+        .welcome-card strong {
+            font-size: 30px;
+            font-weight: 900;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #006f92,
+                            #6757c9,
+                            #d44787
+                    );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        /* ================= ACCOUNT TOOLS ================= */
+
+        .account-tools {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+
+        /* ================= PROFILE ================= */
+
+        .profile-circle {
+            width: 46px;
+            height: 46px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #dff7ff,
+                            #eee4ff,
+                            #ffe8f2
+                    );
+
+            border:
+                    2px solid rgba(255,255,255,0.9);
+
+            box-shadow:
+                    0 6px 18px rgba(75, 96, 140, 0.18);
+
+            text-decoration: none;
+
+            font-size: 21px;
+
+            transition: 0.25s ease;
+        }
+
+
+        .profile-circle:hover {
+            transform: translateY(-2px) scale(1.04);
+
+            box-shadow:
+                    0 10px 24px rgba(75, 96, 140, 0.26);
+        }
+
+
+        /* ================= AI ASSISTANT ================= */
+
+        .ai-assistant-circle {
+            width: 58px;
+            height: 58px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+
+            border-radius: 17px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #65d7ff,
+                            #8271e6,
+                            #e86ca4
+                    );
+
+            box-shadow:
+                    0 7px 18px rgba(82, 90, 177, 0.28);
+
+            transition: 0.25s ease;
+
+            animation: aiPulse 3s ease-in-out infinite;
+        }
+
+
+        .ai-assistant-circle:hover {
+            transform: translateY(-3px) scale(1.04);
+        }
+
+
+        .ai-inner {
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: white;
+
+            border-radius: 50%;
+
+            font-size: 16px;
+        }
+
+
+        .ai-label {
+            margin-top: 2px;
+
+            color: white;
+
+            font-size: 7px;
+
+            font-weight: 800;
+        }
+
+
+        @keyframes aiPulse {
+
+            0%, 100% {
+                box-shadow:
+                        0 7px 18px rgba(82, 90, 177, 0.25);
+            }
+
+            50% {
+                box-shadow:
+                        0 10px 25px rgba(82, 90, 177, 0.40);
+            }
+        }
+
+
+        /* ================= SECTION TITLE ================= */
+
+        .section-title {
+            text-align: center;
+
+            margin: 31px 0 17px;
+        }
+
+
+        .section-title h2 {
+            margin: 0;
+
+            font-size: 25px;
+
+            color: #064f70;
+        }
+
+
+        .section-title p {
+            margin: 7px 0 0;
+
+            font-size: 13px;
+
+            color: #5b6f7a;
+        }
+
+        /* ================= PATIENT HERO ================= */
+
+        .patient-hero {
+            width: calc(100% - 64px);
+
+            min-height: 245px;
+
+            margin: 0 auto 25px;
+
+            padding: 25px 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            border-radius: 23px;
+
+            background:
+                    linear-gradient(
+                            120deg,
+                            rgba(203,242,255,0.84),
+                            rgba(224,216,255,0.82),
+                            rgba(255,224,238,0.82)
+                    );
+
+            border:
+                    1px solid rgba(255,255,255,0.82);
+
+            box-shadow:
+                    0 13px 34px rgba(39, 88, 117, 0.19);
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .patient-hero-content {
+            max-width: 64%;
+
+            position: relative;
+
+            z-index: 3;
+        }
+
+
+        .priority-tag {
+            display: inline-block;
+
+            padding: 7px 13px;
+
+            border-radius: 30px;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #ff6389,
+                            #9a70e7
+                    );
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+
+        .patient-hero h2 {
+            margin: 12px 0 7px;
+
+            font-size: 30px;
+
+            color: #064e70;
+        }
+
+
+        .patient-hero h2 span {
+            color: #d54e82;
+        }
+
+
+        .patient-hero p {
+            margin: 0;
+
+            max-width: 580px;
+
+            color: #526875;
+
+            line-height: 1.6;
+
+            font-size: 14px;
+        }
+
+
+        .health-badge {
+            margin-top: 15px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 9px 15px;
+
+            background:
+                    rgba(255,255,255,0.62);
+
+            border-radius: 30px;
+
+            color: #17617e;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        /* ================= ANIME FEMALE DOCTOR ================= */
+
+        .anime-doctor-wrap {
+            width: 255px;
+            height: 240px;
+
+            position: relative;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-end;
+
+            animation: animeDoctorFloat 4s ease-in-out infinite;
+        }
+
+
+        @keyframes animeDoctorFloat {
+
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+
+
+        .anime-doctor {
+            width: 175px;
+            height: 225px;
+
+            position: relative;
+        }
+
+
+        /* HAIR */
+
+        .anime-hair {
+            position: absolute;
+
+            width: 124px;
+            height: 139px;
+
+            left: 25px;
+            top: 4px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #3b245e,
+                            #6d3e88,
+                            #a45b91
+                    );
+
+            border-radius:
+                    60% 55% 48% 50%;
+
+            box-shadow:
+                    0 10px 18px rgba(59,36,94,0.20);
+        }
+
+
+        .anime-hair::before {
+            content: "";
+
+            position: absolute;
+
+            width: 48px;
+            height: 155px;
+
+            left: -14px;
+            top: 48px;
+
+            background:
+                    linear-gradient(
+                            160deg,
+                            #4b2c69,
+                            #8c4e8e
+                    );
+
+            border-radius:
+                    50% 30% 60% 55%;
+
+            transform: rotate(8deg);
+        }
+
+
+        .anime-hair::after {
+            content: "";
+
+            position: absolute;
+
+            width: 42px;
+            height: 150px;
+
+            right: -10px;
+            top: 48px;
+
+            background:
+                    linear-gradient(
+                            160deg,
+                            #4b2c69,
+                            #8c4e8e
+                    );
+
+            border-radius:
+                    30% 50% 55% 60%;
+
+            transform: rotate(-8deg);
+        }
+
+
+        /* FACE */
+
+        .anime-face {
+            position: absolute;
+
+            width: 91px;
+            height: 101px;
+
+            left: 42px;
+            top: 31px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #fff0e9,
+                            #ffdcd0
+                    );
+
+            border-radius:
+                    47% 47% 48% 48%;
+
+            z-index: 3;
+
+            box-shadow:
+                    0 4px 10px rgba(110,70,70,0.10);
+        }
+
+
+        /* BANGS */
+
+        .anime-bangs {
+            position: absolute;
+
+            width: 94px;
+            height: 45px;
+
+            left: 40px;
+            top: 23px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #43255f,
+                            #754080
+                    );
+
+            border-radius:
+                    55% 45% 60% 30%;
+
+            z-index: 5;
+
+            transform: rotate(-4deg);
+        }
+
+
+        /* EYES */
+
+        .anime-eye {
+            position: absolute;
+
+            width: 17px;
+            height: 21px;
+
+            top: 70px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            z-index: 7;
+
+            border: 1px solid rgba(80,55,80,0.15);
+        }
+
+
+        .anime-eye::after {
+            content: "";
+
+            position: absolute;
+
+            width: 8px;
+            height: 12px;
+
+            left: 5px;
+            top: 4px;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #473061,
+                            #1f2345
+                    );
+
+            border-radius: 50%;
+        }
+
+
+        .eye-left {
+            left: 59px;
+        }
+
+
+        .eye-right {
+            left: 94px;
+        }
+
+
+        /* NOSE */
+
+        .anime-nose {
+            position: absolute;
+
+            width: 7px;
+            height: 10px;
+
+            left: 83px;
+            top: 87px;
+
+            border-right: 2px solid #dc9f95;
+
+            border-radius: 50%;
+
+            z-index: 7;
+        }
+
+
+        /* SMILE */
+
+        .anime-smile {
+            position: absolute;
+
+            width: 22px;
+            height: 9px;
+
+            left: 75px;
+            top: 104px;
+
+            border-bottom:
+                    3px solid #df7292;
+
+            border-radius: 50%;
+
+            z-index: 7;
+        }
+
+
+        /* BODY / COAT */
+
+        .anime-body {
+            position: absolute;
+
+            width: 143px;
+            height: 104px;
+
+            left: 16px;
+            top: 116px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #ffffff,
+                            #eaf6fb
+                    );
+
+            border-radius:
+                    48px 48px 18px 18px;
+
+            z-index: 2;
+
+            box-shadow:
+                    0 10px 18px rgba(54,91,110,0.18);
+        }
+
+
+        /* SHIRT */
+
+        .anime-shirt {
+            position: absolute;
+
+            width: 39px;
+            height: 63px;
+
+            left: 68px;
+            top: 119px;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #78d9e7,
+                            #6b8ee7
+                    );
+
+            z-index: 3;
+
+            clip-path:
+                    polygon(
+                            25% 0,
+                            75% 0,
+                            100% 100%,
+                            0 100%
+                    );
+        }
+
+
+        /* STETHOSCOPE */
+
+        .stetho-line {
+            position: absolute;
+
+            width: 74px;
+            height: 70px;
+
+            left: 50px;
+            top: 112px;
+
+            border:
+                    4px solid #e65387;
+
+            border-top: 0;
+
+            border-radius:
+                    0 0 45px 45px;
+
+            z-index: 8;
+        }
+
+
+        .stetho-head {
+            position: absolute;
+
+            width: 16px;
+            height: 16px;
+
+            left: 101px;
+            top: 174px;
+
+            background: #e65387;
+
+            border-radius: 50%;
+
+            border: 3px solid white;
+
+            z-index: 9;
+        }
+
+
+        /* MEDICAL BADGE */
+
+        .anime-badge {
+            position: absolute;
+
+            width: 24px;
+            height: 24px;
+
+            right: 31px;
+            top: 144px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #ff5c86,
+                            #bd5fda
+                    );
+
+            border-radius: 7px;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 900;
+
+            font-size: 16px;
+
+            z-index: 10;
+        }
+
+
+        /* FLOATING PLUS */
+
+        .floating-plus {
+            position: absolute;
+
+            width: 23px;
+            height: 23px;
+
+            border-radius: 7px;
+
+            background: #58c8e9;
+
+            opacity: 0.85;
+
+            animation:
+                    plusFloat 3.5s ease-in-out infinite;
+        }
+
+
+        .floating-plus::before {
+            content: "+";
+
+            color: white;
+
+            font-weight: 900;
+
+            font-size: 17px;
+
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                    translate(-50%, -53%);
+        }
+
+
+        .plus-one {
+            right: 205px;
+            top: 24px;
+        }
+
+
+        .plus-two {
+            right: 23px;
+            top: 46px;
+
+            background: #9a76e7;
+
+            animation-delay: 0.8s;
+        }
+
+
+        @keyframes plusFloat {
+
+            0%, 100% {
+                transform:
+                        translateY(0)
+                        rotate(0deg);
+            }
+
+            50% {
+                transform:
+                        translateY(-9px)
+                        rotate(8deg);
+            }
+        }
+
+        /* ================= SERVICES ================= */
+
+        .services-grid {
+            width: calc(100% - 64px);
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        .service-card {
+            min-height: 145px;
+
+            padding: 22px 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            background:
+                    rgba(255,255,255,0.60);
+
+            border:
+                    1px solid rgba(255,255,255,0.80);
+
+            border-radius: 19px;
+
+            box-shadow:
+                    0 10px 25px rgba(27,70,96,0.13);
+
+            backdrop-filter: blur(4px);
+
+            -webkit-backdrop-filter: blur(4px);
+
+            transition:
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .service-card:hover {
+            transform: translateY(-6px);
+
+            background:
+                    rgba(255,255,255,0.78);
+
+            box-shadow:
+                    0 16px 32px rgba(27,70,96,0.21);
+        }
+
+
+        .service-icon {
+            width: 57px;
+            height: 57px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 17px;
+
+            font-size: 27px;
+
+            margin-bottom: 12px;
+
+            opacity: 0.78;
+
+            box-shadow:
+                    0 7px 16px rgba(40,90,120,0.13);
+        }
+
+
+        .service-card:nth-child(1) .service-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #bceefa,
+                            #73d1ec
+                    );
+        }
+
+
+        .service-card:nth-child(2) .service-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #d6d0fa,
+                            #9d91e4
+                    );
+        }
+
+
+        .service-card:nth-child(3) .service-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #ffd2e5,
+                            #ed91b4
+                    );
+        }
+
+
+        .service-card:nth-child(4) .service-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #d2f2d4,
+                            #86d296
+                    );
+        }
+
+
+        .service-card h3 {
+            margin: 0;
+
+            font-size: 15px;
+
+            color: #164f6b;
+
+            font-weight: 800;
+        }
+
+
+        .service-card p {
+            margin: 6px 0 0;
+
+            color: #71818b;
+
+            font-size: 11px;
+
+            line-height: 1.4;
+        }
+
+
+        /* ================= PANEL TITLES ================= */
+
+        .panel-title {
+            text-align: center;
+
+            margin: 38px 0 18px;
+        }
+
+
+        .panel-title h2 {
+            margin: 0;
+
+            font-size: 24px;
+
+            color: #084f70;
+        }
+
+
+        .panel-title p {
+            margin: 6px 0 0;
+
+            color: #687b85;
+
+            font-size: 12px;
+        }
+
+
+        /* ================= MANAGEMENT CARDS ================= */
+
+        .management-grid {
+            width: calc(100% - 64px);
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        .management-card {
+            min-height: 125px;
+
+            padding: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            text-decoration: none;
+
+            background:
+                    rgba(255,255,255,0.60);
+
+            border:
+                    1px solid rgba(255,255,255,0.80);
+
+            border-radius: 18px;
+
+            box-shadow:
+                    0 9px 24px rgba(27,70,96,0.12);
+
+            backdrop-filter: blur(4px);
+
+            -webkit-backdrop-filter: blur(4px);
+
+            transition: 0.25s ease;
+        }
+
+
+        .management-card:hover {
+            transform: translateY(-5px);
+
+            background:
+                    rgba(255,255,255,0.78);
+
+            box-shadow:
+                    0 15px 30px rgba(27,70,96,0.19);
+        }
+
+
+        .management-icon {
+            width: 47px;
+            height: 47px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            font-size: 22px;
+
+            margin-bottom: 12px;
+
+            opacity: 0.78;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #d2eff9,
+                            #bcb6ef
+                    );
+        }
+
+
+        .management-card:nth-child(2) .management-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #ffdce9,
+                            #ffb5ca
+                    );
+        }
+
+
+        .management-card:nth-child(3) .management-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #dcf4d9,
+                            #9ddcaa
+                    );
+        }
+
+
+        .management-card:nth-child(4) .management-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #ffedca,
+                            #ffd188
+                    );
+        }
+
+
+        .management-card:nth-child(5) .management-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #e0ddff,
+                            #b7b0ed
+                    );
+        }
+
+
+        .management-card:nth-child(6) .management-icon {
+            background:
+                    linear-gradient(
+                            135deg,
+                            #d3f0fa,
+                            #82cfe7
+                    );
+        }
+
+
+        .management-card h3 {
+            margin: 0;
+
+            font-size: 15px;
+
+            color: #174e69;
+        }
+
+
+        .management-card p {
+            margin: 6px 0 0;
+
+            font-size: 11px;
+
+            color: #71818b;
+
+            line-height: 1.4;
+        }
+
+        /* ================= LOGOUT ================= */
+
+        .logout-area {
+            text-align: center;
+
+            margin-top: 35px;
+        }
+
+
+        .logout-btn {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 12px 27px;
+
+            background: #e53935;
+
+            color: #fff;
+
+            border: 1px solid #e53935;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            box-shadow:
+                    0 7px 17px rgba(229,57,53,.28);
+
+            transition: .25s;
+        }
+
+
+        .logout-btn:hover {
+            background: #c62828;
+
+            border-color: #c62828;
+
+            color: #fff;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                    0 10px 21px rgba(198,40,40,.32);
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 30px;
+
+            padding-top: 20px;
+
+            border-top:
+                    1px solid rgba(120,160,180,0.20);
+
+            color: #687d88;
+
+            font-size: 11px;
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1050px) {
+
+            .services-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .management-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+
+            .patient-hero-content {
+                max-width: 58%;
+            }
+
+
+            .anime-doctor-wrap {
+                width: 225px;
+            }
+        }
+
+
+        @media (max-width: 760px) {
+
+            .page-container {
+                width: 96%;
+
+                margin: 10px auto;
+
+                border-radius: 18px;
+            }
+
+
+            .navbar {
+                padding: 12px 15px;
+            }
+
+
+            .brand-text h1 {
+                font-size: 19px;
+            }
+
+
+            .welcome-card {
+                min-width: auto;
+
+                padding: 13px 16px;
+            }
+
+
+            .welcome-card strong {
+                font-size: 22px;
+            }
+
+
+            .account-tools {
+                gap: 5px;
+            }
+
+
+            .profile-circle {
+                width: 40px;
+                height: 40px;
+            }
+
+
+            .ai-assistant-circle {
+                width: 50px;
+                height: 50px;
+            }
+
+
+            .patient-hero {
+                width: calc(100% - 30px);
+
+                flex-direction: column;
+
+                text-align: center;
+
+                padding: 22px 18px;
+            }
+
+
+            .patient-hero-content {
+                max-width: 100%;
+            }
+
+
+            .anime-doctor-wrap {
+                width: 215px;
+            }
+
+
+            .services-grid {
+                width: calc(100% - 30px);
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .management-grid {
+                width: calc(100% - 30px);
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        @media (max-width: 500px) {
+
+            .navbar {
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+
+            .top-right {
+                gap: 7px;
+            }
+
+
+            .welcome-card span:first-child {
+                font-size: 13px;
+            }
+
+
+            .welcome-card strong {
+                font-size: 19px;
+            }
+
+
+            .profile-circle {
+                width: 37px;
+                height: 37px;
+            }
+
+
+            .ai-assistant-circle {
+                width: 46px;
+                height: 46px;
+            }
+
+
+            .ai-inner {
+                width: 27px;
+                height: 27px;
+
+                font-size: 15px;
+            }
+
+
+            .patient-hero h2 {
+                font-size: 24px;
+            }
+
+
+            .anime-doctor-wrap {
+                transform: scale(0.90);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar">
+
+        <div class="brand-area">
+
+            <div class="advanced-hospital-logo">
+                <div class="logo-cross"></div>
+            </div>
+
+            <div class="brand-text">
+                <h1>Hospital Care</h1>
+            </div>
+
+        </div>
+
+
+        <div class="top-right">
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome-area">
+
+                <div class="welcome-card">
+
+                    <span>Welcome,</span>
+
+                    <strong th:text="${name}">
+                        User
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROFILE + AI BELOW PROFILE -->
+
+            <div
+                    th:if="${role == 'PATIENT'}"
+                    class="account-tools"
+            >
+
+                <a
+                        href="/my-profile"
+                        class="profile-circle"
+                        title="My Profile"
+                >
+                    👤
+                </a>
+
+
+                <a
+                        href="/ai-assistant"
+                        class="ai-assistant-circle"
+                        title="AI Hospital Assistant"
+                >
+
+                    <div class="ai-inner">
+                        🤖
+                    </div>
+
+                    <div class="ai-label">
+                        AI
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ================= PATIENT PANEL ================= -->
+
+    <div th:if="${role == 'PATIENT'}">
+
+
+        <div class="section-title">
+
+            <h2>
+                Patient Panel
+            </h2>
+
+            <p>
+                Manage your healthcare services from one place
+            </p>
+
+        </div>
+
+
+
+        <!-- ================= HERO ================= -->
+
+        <div class="patient-hero">
+
+
+            <div class="patient-hero-content">
+
+                <span class="priority-tag">
+                    ✨ Personal Healthcare
+                </span>
+
+
+                <h2>
+                    Your Health,
+                    <span>Our Priority</span>
+                </h2>
+
+
+                <p>
+                    Access appointments, medical reports,
+                    prescriptions, laboratory reports,
+                    bills and intelligent healthcare assistance
+                    from your personal hospital dashboard.
+                </p>
+
+
+                <div class="health-badge">
+                    ❤️ Caring for you with smarter healthcare
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= ANIME DOCTOR ================= -->
+
+            <div class="anime-doctor-wrap">
+
+                <div class="floating-plus plus-one"></div>
+
+                <div class="floating-plus plus-two"></div>
+
+
+                <div class="anime-doctor">
+
+
+                    <!-- LONG HAIR -->
+
+                    <div class="anime-hair"></div>
+
+
+                    <!-- FACE -->
+
+                    <div class="anime-face"></div>
+
+
+                    <!-- BANGS -->
+
+                    <div class="anime-bangs"></div>
+
+
+                    <!-- EYES -->
+
+                    <div class="anime-eye eye-left"></div>
+
+                    <div class="anime-eye eye-right"></div>
+
+
+                    <!-- NOSE -->
+
+                    <div class="anime-nose"></div>
+
+
+                    <!-- SMILE -->
+
+                    <div class="anime-smile"></div>
+
+
+                    <!-- BODY -->
+
+                    <div class="anime-body"></div>
+
+
+                    <!-- BLUE SHIRT -->
+
+                    <div class="anime-shirt"></div>
+
+
+                    <!-- STETHOSCOPE -->
+
+                    <div class="stetho-line"></div>
+
+                    <div class="stetho-head"></div>
+
+
+                    <!-- MEDICAL BADGE -->
+
+                    <div class="anime-badge">
+                        +
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= PATIENT SERVICES ================= -->
+
+        <div class="services-grid">
+
+
+            <a
+                    href="/book-appointment"
+                    class="service-card"
+            >
+
+                <div class="service-icon">
+                    📅
+                </div>
+
+                <h3>
+                    Book Appointment
+                </h3>
+
+                <p>
+                    Schedule your doctor visit
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/my-appointments"
+                    class="service-card"
+            >
+
+                <div class="service-icon">
+                    🩺
+                </div>
+
+                <h3>
+                    My Appointments
+                </h3>
+
+                <p>
+                    View appointment status
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/my-medical-reports"
+                    class="service-card"
+            >
+
+                <div class="service-icon">
+                    📋
+                </div>
+
+                <h3>
+                    My Medical Reports
+                </h3>
+
+                <p>
+                    View your medical history
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/my-prescriptions"
+                    class="service-card"
+            >
+
+                <div class="service-icon">
+                    💊
+                </div>
+
+                <h3>
+                    My Prescriptions
+                </h3>
+
+                <p>
+                    View medicines and instructions
+                </p>
+
+            </a>
+
+        </div>
+        <!-- ================= REMAINING PATIENT SERVICES ================= -->
+
+        <div
+                class="services-grid"
+                style="margin-top:18px;"
+        >
+
+
+            <a
+                    href="/my-lab-reports"
+                    class="service-card"
+            >
+
+                <div class="service-icon">
+                    🧪
+                </div>
+
+                <h3>
+                    My Lab Reports
+                </h3>
+
+                <p>
+                    Check laboratory test reports
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/my-bills"
+                    class="service-card"
+            >
+
+                <div class="service-icon">
+                    💳
+                </div>
+
+                <h3>
+                    My Bills
+                </h3>
+
+                <p>
+                    View billing and payment details
+                </p>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= DOCTOR PANEL ================= -->
+
+    <div th:if="${role == 'DOCTOR'}">
+
+        <div class="panel-title">
+
+            <h2>
+                Doctor Panel
+            </h2>
+
+            <p>
+                Manage patients, appointments and clinical records
+            </p>
+
+        </div>
+
+
+        <div class="management-grid">
+
+
+            <a
+                    href="/doctor/patients"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    👨‍⚕️
+                </div>
+
+                <h3>
+                    Patient Management
+                </h3>
+
+                <p>
+                    Search and view patient information
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/doctor/appointments"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    📅
+                </div>
+
+                <h3>
+                    Appointment Management
+                </h3>
+
+                <p>
+                    Accept, complete or cancel appointments
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/doctor/medical-reports"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    📋
+                </div>
+
+                <h3>
+                    Clinical Records
+                </h3>
+
+                <p>
+                    Create and manage medical reports
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/doctor/prescriptions"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    💊
+                </div>
+
+                <h3>
+                    Prescription Management
+                </h3>
+
+                <p>
+                    Manage patient prescriptions
+                </p>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= ADMIN PANEL ================= -->
+
+    <div th:if="${role == 'ADMIN'}">
+
+        <div class="panel-title">
+
+            <h2>
+                Administration Panel
+            </h2>
+
+            <p>
+                Centralized hospital management and control
+            </p>
+
+        </div>
+
+
+        <div class="management-grid">
+
+
+            <a
+                    href="/patients"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    🧑‍🤝‍🧑
+                </div>
+
+                <h3>
+                    Patient Management
+                </h3>
+
+                <p>
+                    Register and manage patients
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/doctors"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    👨‍⚕️
+                </div>
+
+                <h3>
+                    Doctor Management
+                </h3>
+
+                <p>
+                    Manage doctors and specialists
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/appointments"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    📅
+                </div>
+
+                <h3>
+                    Appointment Management
+                </h3>
+
+                <p>
+                    Manage hospital appointments
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/medicines"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    💊
+                </div>
+
+                <h3>
+                    Pharmacy
+                </h3>
+
+                <p>
+                    Manage medicines and inventory
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/departments"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    🏥
+                </div>
+
+                <h3>
+                    Departments
+                </h3>
+
+                <p>
+                    Manage hospital departments
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/medical-reports"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    📑
+                </div>
+
+                <h3>
+                    Medical Reports
+                </h3>
+
+                <p>
+                    Manage clinical reports
+                </p>
+
+            </a>
+
+
+        </div>
+
+
+        <div
+                class="management-grid"
+                style="margin-top:18px;"
+        >
+
+
+            <a
+                    href="/billing"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    💰
+                </div>
+
+                <h3>
+                    Billing
+                </h3>
+
+                <p>
+                    Manage patient billing and payments
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/laboratory"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    🧪
+                </div>
+
+                <h3>
+                    Laboratory
+                </h3>
+
+                <p>
+                    Manage laboratory tests and reports
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/rooms"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    🛏️
+                </div>
+
+                <h3>
+                    Rooms & Beds
+                </h3>
+
+                <p>
+                    Manage room and bed allocation
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/staff"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    👥
+                </div>
+
+                <h3>
+                    Staff Management
+                </h3>
+
+                <p>
+                    Manage hospital staff
+                </p>
+
+            </a>
+
+
+
+            <a
+                    href="/reports"
+                    class="management-card"
+            >
+
+                <div class="management-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Report Generation
+                </h3>
+
+                <p>
+                    Generate hospital management reports
+                </p>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= LOGOUT ================= -->
+
+    <div class="logout-area">
+
+        <a
+                href="/logout"
+                class="logout-btn"
+        >
+            🚪 Logout
+        </a>
+
+    </div>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <div class="footer">
+
+        <div>
+            Hospital Care • Advanced Hospital Management System
+        </div>
+
+        <div style="margin-top:5px;">
+            Smart Healthcare • Better Management • Better Care
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

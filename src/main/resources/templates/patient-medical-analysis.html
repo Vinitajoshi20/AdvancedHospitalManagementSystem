@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Medical Report Analysis</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                    linear-gradient(rgba(5, 35, 55, 0.72), rgba(5, 35, 55, 0.72)),
+                    url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 35px 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: #0b3d62;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .header h1 {
+            color: #0b3d62;
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .patient-card {
+            background: #f1f7fb;
+            border-left: 5px solid #12618d;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+        }
+
+        .patient-card h3 {
+            color: #0b3d62;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .patient-card p {
+            color: #475569;
+            font-size: 15px;
+        }
+
+        .report-card {
+            border: 1px solid #dbe5ec;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background: white;
+        }
+
+        .report-title {
+            color: #0b3d62;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .detail-box.full {
+            grid-column: 1 / -1;
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .value {
+            color: #1e293b;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .analysis-card {
+            background: linear-gradient(135deg, #eef7ff, #f8fbff);
+            border: 1px solid #c9e2f5;
+            border-radius: 15px;
+            padding: 28px;
+            margin-top: 25px;
+        }
+
+        .analysis-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .analysis-header-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #12618d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .analysis-header h2 {
+            color: #0b3d62;
+            font-size: 22px;
+        }
+
+        .analysis-text {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            border: 1px solid #dbeafe;
+            color: #334155;
+            line-height: 1.8;
+            white-space: pre-line;
+            font-size: 15px;
+        }
+
+        .warning {
+            margin-top: 22px;
+            padding: 16px 18px;
+            background: #fff8e7;
+            border: 1px solid #f1d48a;
+            border-radius: 10px;
+            color: #765b16;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            background: #e8f0f5;
+            color: #0b3d62;
+            padding: 12px 24px;
+            border-radius: 9px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .back-button:hover {
+            background: #d8e7f0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 20px 12px;
+            }
+
+            .container {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-box.full {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div class="header-icon">
+            🤖
+        </div>
+
+        <h1>AI Medical Report Analysis</h1>
+
+        <p>
+            Intelligent analysis of your medical report for better understanding
+        </p>
+
+    </div>
+
+
+    <div class="patient-card">
+
+        <h3>Patient Information</h3>
+
+        <p>
+            Patient:
+            <strong th:text="${patientName}">
+                Patient Name
+            </strong>
+        </p>
+
+    </div>
+
+
+    <div class="report-card">
+
+        <div class="report-title">
+            Medical Report Details
+        </div>
+
+        <div class="details-grid">
+
+            <div class="detail-box">
+
+                <div class="label">
+                    Report ID
+                </div>
+
+                <div class="value"
+                     th:text="${report.id}">
+                    1
+                </div>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="label">
+                    Report Date
+                </div>
+
+                <div class="value"
+                     th:text="${report.reportDate}">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="label">
+                    Diagnosis
+                </div>
+
+                <div class="value"
+                     th:text="${report.diagnosis != null and !#strings.isEmpty(report.diagnosis) ? report.diagnosis : 'Not available'}">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="detail-box">
+
+                <div class="label">
+                    Symptoms
+                </div>
+
+                <div class="value"
+                     th:text="${report.symptoms != null and !#strings.isEmpty(report.symptoms) ? report.symptoms : 'Not available'}">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="detail-box full">
+
+                <div class="label">
+                    Prescription
+                </div>
+
+                <div class="value"
+                     th:text="${report.prescription != null and !#strings.isEmpty(report.prescription) ? report.prescription : 'Not available'}">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="detail-box full">
+
+                <div class="label">
+                    Doctor's Advice
+                </div>
+
+                <div class="value"
+                     th:text="${report.doctorAdvice != null and !#strings.isEmpty(report.doctorAdvice) ? report.doctorAdvice : 'Not available'}">
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="analysis-card">
+
+        <div class="analysis-header">
+
+            <div class="analysis-header-icon">
+                🧠
+            </div>
+
+            <h2>
+                AI-Generated Analysis
+            </h2>
+
+        </div>
+
+
+        <div class="analysis-text"
+             th:text="${analysis}">
+            AI analysis will appear here.
+        </div>
+
+
+        <div class="warning">
+
+            ⚠️ <strong>Important Safety Notice:</strong>
+            This AI analysis is provided for informational and educational
+            purposes only. It does not provide a medical diagnosis and should
+            not replace advice from a qualified healthcare professional.
+
+        </div>
+
+    </div>
+
+
+    <div class="actions">
+
+        <a href="/my-medical-reports"
+           class="back-button">
+            ← Back to Medical Reports
+        </a>
+
+    </div>
+
+
+    <div class="footer">
+
+        Advanced Hospital Management System
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

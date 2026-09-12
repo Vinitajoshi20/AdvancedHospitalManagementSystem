@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Medical Reports</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background:
+                    linear-gradient(rgba(5, 25, 55, 0.65), rgba(5, 25, 55, 0.65)),
+                    url("https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 18px;
+            padding: 35px 40px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            font-size: 45px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #123b66;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            color: #66788a;
+            margin-top: 8px;
+            font-size: 15px;
+        }
+
+        .doctor-box {
+            background: #f1f6fb;
+            border-left: 5px solid #1769aa;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 25px;
+            color: #234;
+        }
+
+        .doctor-box strong {
+            color: #123b66;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #29445f;
+            font-size: 14px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ccd7e2;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+            background: #fff;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #1769aa;
+            box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.10);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .button-area {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 9px;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #1769aa;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #0f568e;
+        }
+
+        .back-btn {
+            background: #eef3f7;
+            color: #345;
+        }
+
+        .back-btn:hover {
+            background: #dfe8ef;
+        }
+
+        .reports-section {
+            margin-top: 40px;
+            border-top: 1px solid #dce5ed;
+            padding-top: 30px;
+        }
+
+        .reports-section h2 {
+            color: #123b66;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .report-card {
+            background: #f8fbfd;
+            border: 1px solid #dce5ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #dce5ed;
+        }
+
+        .report-header strong {
+            display: block;
+            color: #123b66;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .report-header span {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .report-date {
+            color: #1769aa;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .report-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .report-item {
+            background: white;
+            border-radius: 9px;
+            padding: 14px;
+            border: 1px solid #e4ebf1;
+        }
+
+        .report-item strong {
+            display: block;
+            color: #29445f;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .report-item p {
+            margin: 0;
+            color: #5d6d7e;
+            line-height: 1.5;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+
+        .no-reports {
+            text-align: center;
+            padding: 25px;
+            background: #f5f8fa;
+            border-radius: 10px;
+            color: #718096;
+        }
+
+        @media (max-width: 650px) {
+            .report-content {
+                grid-template-columns: 1fr;
+            }
+
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                padding: 25px 20px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .button-area {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="header-icon">📋</div>
+        <h1>Medical Report</h1>
+        <div class="subtitle">
+            Create and save a medical report for a patient
+        </div>
+    </div>
+
+    <div class="doctor-box">
+        <strong>Doctor:</strong>
+        <span th:text="${doctorName}">Doctor Name</span>
+    </div>
+
+    <form th:action="@{/doctor/medical-reports}"
+          th:object="${medicalReport}"
+          method="post">
+
+        <div class="row">
+
+            <div class="form-group">
+                <label for="patientId">Patient ID</label>
+                <input type="number"
+                       id="patientId"
+                       th:field="*{patientId}"
+                       placeholder="Enter patient ID"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="patientName">Patient Name</label>
+                <input type="text"
+                       id="patientName"
+                       th:field="*{patientName}"
+                       placeholder="Enter patient name"
+                       required>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label for="reportDate">Report Date</label>
+            <input type="date"
+                   id="reportDate"
+                   th:field="*{reportDate}"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="diagnosis">Diagnosis</label>
+            <textarea id="diagnosis"
+                      th:field="*{diagnosis}"
+                      placeholder="Enter diagnosis"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="symptoms">Symptoms</label>
+            <textarea id="symptoms"
+                      th:field="*{symptoms}"
+                      placeholder="Enter patient symptoms"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="prescription">Prescription</label>
+            <textarea id="prescription"
+                      th:field="*{prescription}"
+                      placeholder="Enter prescribed medicines and dosage"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="doctorAdvice">Doctor Advice</label>
+            <textarea id="doctorAdvice"
+                      th:field="*{doctorAdvice}"
+                      placeholder="Enter doctor's advice and follow-up instructions"></textarea>
+        </div>
+
+        <div class="button-area">
+
+            <button type="submit" class="btn save-btn">
+                Save Medical Report
+            </button>
+
+            <a href="/doctor/dashboard" class="btn back-btn">
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+    </form>
+
+    <div class="reports-section">
+
+        <h2>Saved Medical Reports</h2>
+
+        <div th:if="${reports != null and !reports.isEmpty()}">
+
+            <div class="report-card" th:each="report : ${reports}">
+
+                <div class="report-header">
+                    <div>
+                        <strong th:text="${report.patientName}">
+                            Patient Name
+                        </strong>
+                        <span>
+                        Patient ID:
+                        <span th:text="${report.patientId}">1</span>
+                    </span>
+                    </div>
+
+                    <div class="report-date"
+                         th:text="${report.reportDate}">
+                        2026-01-01
+                    </div>
+                </div>
+
+                <div class="report-content">
+
+                    <div class="report-item">
+                        <strong>Diagnosis</strong>
+                        <p th:text="${report.diagnosis}">
+                            Diagnosis details
+                        </p>
+                    </div>
+
+                    <div class="report-item">
+                        <strong>Symptoms</strong>
+                        <p th:text="${report.symptoms}">
+                            Symptoms details
+                        </p>
+                    </div>
+
+                    <div class="report-item">
+                        <strong>Prescription</strong>
+                        <p th:text="${report.prescription}">
+                            Prescription details
+                        </p>
+                    </div>
+
+                    <div class="report-item">
+                        <strong>Doctor Advice</strong>
+                        <p th:text="${report.doctorAdvice}">
+                            Doctor advice
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="no-reports"
+             th:if="${reports == null or reports.isEmpty()}">
+            No medical reports available.
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

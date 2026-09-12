@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Information</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(10, 35, 70, 0.78), rgba(10, 35, 70, 0.78)),
+            url('/images/hospital-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 950px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0b3d6e;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #0b3d6e;
+            border-bottom: 2px solid #0b3d6e;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .detail-box {
+            background: #f5f8fc;
+            border: 1px solid #dce5ef;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .detail-box.full {
+            grid-column: span 2;
+        }
+
+        .label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            font-size: 16px;
+            color: #222;
+            min-height: 20px;
+        }
+
+        .button-section {
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            margin: 5px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: #0b3d6e;
+        }
+
+        .report-btn {
+            background: #16803c;
+        }
+
+        .btn:hover {
+            opacity: 0.88;
+        }
+
+        @media (max-width: 700px) {
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-box.full {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Patient Information</h1>
+
+
+    <!-- Basic Information -->
+
+    <h2>Basic Information</h2>
+
+    <div class="details-grid">
+
+        <div class="detail-box">
+            <span class="label">Patient ID</span>
+            <span class="value" th:text="${patient.id}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Patient Name</span>
+            <span class="value" th:text="${patient.name}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Age</span>
+            <span class="value"
+                  th:text="${patient.age != null ? patient.age : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Gender</span>
+            <span class="value"
+                  th:text="${patient.gender != null and patient.gender != '' ? patient.gender : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Mobile Number</span>
+            <span class="value"
+                  th:text="${patient.phone != null and patient.phone != '' ? patient.phone : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Email</span>
+            <span class="value"
+                  th:text="${patient.email != null and patient.email != '' ? patient.email : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Blood Group</span>
+            <span class="value"
+                  th:text="${patient.bloodGroup != null and patient.bloodGroup != '' ? patient.bloodGroup : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Patient Type</span>
+            <span class="value"
+                  th:text="${patient.patientType != null and patient.patientType != '' ? patient.patientType : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box full">
+            <span class="label">Address</span>
+            <span class="value"
+                  th:text="${patient.address != null and patient.address != '' ? patient.address : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Emergency Contact</span>
+            <span class="value"
+                  th:text="${patient.emergencyContact != null and patient.emergencyContact != '' ? patient.emergencyContact : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Admission Date</span>
+            <span class="value"
+                  th:text="${patient.admissionDate != null ? patient.admissionDate : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Room Number</span>
+            <span class="value"
+                  th:text="${patient.roomNumber != null and patient.roomNumber != '' ? patient.roomNumber : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box">
+            <span class="label">Insurance Number</span>
+            <span class="value"
+                  th:text="${patient.insuranceNumber != null and patient.insuranceNumber != '' ? patient.insuranceNumber : 'Not Provided'}"></span>
+        </div>
+
+    </div>
+
+
+    <!-- Medical Information -->
+
+    <h2>Medical Information</h2>
+
+    <div class="details-grid">
+
+        <div class="detail-box full">
+            <span class="label">Medical History</span>
+            <span class="value"
+                  th:text="${patient.medicalHistory != null and patient.medicalHistory != '' ? patient.medicalHistory : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box full">
+            <span class="label">Allergies</span>
+            <span class="value"
+                  th:text="${patient.allergies != null and patient.allergies != '' ? patient.allergies : 'Not Provided'}"></span>
+        </div>
+
+        <div class="detail-box full">
+            <span class="label">Current Condition</span>
+            <span class="value"
+                  th:text="${patient.currentCondition != null and patient.currentCondition != '' ? patient.currentCondition : 'Not Provided'}"></span>
+        </div>
+
+    </div>
+
+
+    <!-- Buttons -->
+
+    <div class="button-section">
+
+        <a href="/doctor/patients" class="btn back-btn">
+            Back to Patients
+        </a>
+
+        <a href="/doctor/medical-reports" class="btn report-btn">
+            Medical Reports
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
